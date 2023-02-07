@@ -52,7 +52,7 @@ function updateUI(data, unit = "celsius") {
   }
 
   // Update the time element
-  time.setAttribute("src", weather.IsDayTime ? "img/day.svg" : "img/night.svg");
+  // time.setAttribute("src", weather.IsDayTime ? "img/day.svg" : "img/night.svg");
 
   // Show the card
   card.classList.remove("d-none");
@@ -95,6 +95,14 @@ function updateTemperatureDisplay(unit) {
   }
 }
 
+// Create a Leaflet map and set its initial view
+const map = L.map('map').setView([51.505, -0.09], 13); // Replace with your desired initial coordinates and zoom level
+
+// Add OpenStreetMap as the base tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
 // Event listener for form submission
 cityForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -104,7 +112,10 @@ cityForm.addEventListener("submit", (e) => {
   // Update the UI with the current unit
   forecast
     .updateCity(city)
-    .then((data) => updateUI(data, currentUnit))
+    .then((data) => {
+      updateUI(data, currentUnit);
+      updateMapMarkers(map, data);
+    })
     .catch((err) => {
       errorElement.textContent = "Error: " + err.message;
       console.log(err);
@@ -119,4 +130,33 @@ if (localStorage.getItem("city")) {
     .updateCity(localStorage.getItem("city"))
     .then((data) => updateUI(data, currentUnit))
     .catch((err) => console.log(err));
+}
+
+// Function to update the map markers or layers based on weather data
+function updateMapMarkers(map, data) {
+  // Clear existing weather icons on the map
+  map.eachLayer((layer) => {
+    if (layer instanceof L.Marker && layer.options.isWeatherIcon) {
+      map.removeLayer(layer);
+    }
+  });
+
+  // Create new weather icons based on the weather data and add them to the map
+  const { cityDets, weather } = data;
+
+  // Check if cityDets and weather data are available
+  if (cityDets && weather) {
+    const { Latitude, Longitude } = cityDets.GeoPosition; // Replace with the correct property names from your data
+
+    // Create a weather icon based on the weather condition
+    const weatherIcon = L.divIcon({
+      className: 'weather-icon', // Add a custom CSS class for styling
+      html: `<img src="${weatherIcons[weather.WeatherText] || './img/sunny.svg'}" alt="${weather.WeatherText}" />`,
+      iconSize: [32, 32], // Adjust the size as needed
+    });
+
+    // Create a marker with the weather icon
+    const weatherMarker = L.marker([Latitude, Longitude], { icon: weatherIcon }).addTo(map);
+    weatherMarker.options.isWeatherIcon = true; // Custom property to identify it as a weather icon
+  }
 }
