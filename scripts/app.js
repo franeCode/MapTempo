@@ -22,7 +22,7 @@ const weatherIcons = {
 // Function to update the UI based on weather data and unit
 function updateUI(data, unit = "celsius") {
   const { cityDets, weather } = data;
-
+  console.log(data);
   // Clear the error message
   errorElement.textContent = "";
 
@@ -100,8 +100,21 @@ const map = L.map('map').setView([51.505, -0.09], 13); // Replace with your desi
 
 // Add OpenStreetMap as the base tile layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  noWrap: true,
+    bounds: [
+      [-90, -180],
+      [90, 180],
+    ],
 }).addTo(map);
+
+const resizeObserver = new ResizeObserver(() => {
+  map.invalidateSize();
+});
+
+const mapDiv = document.getElementById("map");
+resizeObserver.observe(mapDiv);
+
 
 // Event listener for form submission
 cityForm.addEventListener("submit", (e) => {
