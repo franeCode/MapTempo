@@ -2,32 +2,34 @@ const cityForm = document.querySelector("form");
 const card = document.querySelector(".card");
 const details = document.querySelector(".details");
 const time = document.querySelector(".time");
-const errorElement = document.getElementById('errorElement');
+const errorElement = document.getElementById("errorElement");
 const forecast = new Forecast();
 
-// Declare the currentUnit variable with a default value
 let currentUnit = "celsius";
 let originalTemperature;
 let originalUnit;
 
 // Weather icons mapping
 const weatherIcons = {
-  'Sunny': './img/sunny.svg',
-  'Rain': './img/rainy.svg',
-  'Cloudy': './img/cloudy.svg',
-  'Mostly cloudy': './img/mostly-cloudy.svg',
-  'Storm': './img/storm.svg'
+  Sunny: "./img/sunny.svg",
+  Rain: "./img/rainy.svg",
+  Cloudy: "./img/cloudy.svg",
+  "Mostly cloudy": "./img/mostly-cloudy.svg",
+  Storm: "./img/storm.svg",
 };
 
 // Function to update the UI based on weather data and unit
 function updateUI(data, unit = "celsius") {
   const { cityDets, weather } = data;
   console.log(data);
-  // Clear the error message
+
   errorElement.textContent = "";
 
   if (weather && cityDets) {
-    const temperatureInSelectedUnit = convertTemperature(weather.Temperature.Metric.Value, unit);
+    const temperatureInSelectedUnit = convertTemperature(
+      weather.Temperature.Metric.Value,
+      unit
+    );
 
     // Store the original temperature and unit
     originalTemperature = temperatureInSelectedUnit;
@@ -36,7 +38,9 @@ function updateUI(data, unit = "celsius") {
     // Create the HTML content using template literals
     const htmlContent = `
       <h5 class="my-3">${cityDets.EnglishName}</h5>
-      <span><img style="width: 3rem" src="${weatherIcons[weather.WeatherText] || './img/sunny.svg'}" alt="Weather Icon"></span>
+      <span><img style="width: 3rem" src="${
+        weatherIcons[weather.WeatherText] || "./img/sunny.svg"
+      }" alt="Weather Icon"></span>
       <div class="my-3">${weather.WeatherText}</div>
       <div class="my-4">
         <span class='temperature'>${temperatureInSelectedUnit.toFixed(2)}</span>
@@ -50,9 +54,6 @@ function updateUI(data, unit = "celsius") {
   } else {
     errorElement.textContent = "Error: " + data.message;
   }
-
-  // Update the time element
-  // time.setAttribute("src", weather.IsDayTime ? "img/day.svg" : "img/night.svg");
 
   // Show the card
   card.classList.remove("d-none");
@@ -73,7 +74,7 @@ function convertTemperature(temperature, unit) {
   if (unit === "celsius") {
     return temperature;
   } else if (unit === "fahrenheit") {
-    return (temperature * 9/5) + 32;
+    return (temperature * 9) / 5 + 32;
   }
 }
 
@@ -84,10 +85,16 @@ function updateTemperatureDisplay(unit) {
 
   if (temperatureElement && unitSymbolElement) {
     // Get the current temperature value
-    const currentTemperature = originalUnit === "celsius" ? originalTemperature : convertTemperature(originalTemperature, "celsius");
-  
+    const currentTemperature =
+      originalUnit === "celsius"
+        ? originalTemperature
+        : convertTemperature(originalTemperature, "celsius");
+
     // Convert the temperature to the selected unit
-    const temperatureInSelectedUnit = convertTemperature(currentTemperature, unit);
+    const temperatureInSelectedUnit = convertTemperature(
+      currentTemperature,
+      unit
+    );
 
     // Update the temperature text and unit symbol
     temperatureElement.textContent = temperatureInSelectedUnit.toFixed(2);
@@ -95,17 +102,17 @@ function updateTemperatureDisplay(unit) {
   }
 }
 
-// Create a Leaflet map and set its initial view
-const map = L.map('map').setView([51.505, -0.09], 13); // Replace with your desired initial coordinates and zoom level
+// Leaflet map
+const map = L.map("map").setView([51.505, -0.09], 13);
 
-// Add OpenStreetMap as the base tile layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   noWrap: true,
-    bounds: [
-      [-90, -180],
-      [90, 180],
-    ],
+  bounds: [
+    [-90, -180],
+    [90, 180],
+  ],
 }).addTo(map);
 
 const resizeObserver = new ResizeObserver(() => {
@@ -114,7 +121,6 @@ const resizeObserver = new ResizeObserver(() => {
 
 const mapDiv = document.getElementById("map");
 resizeObserver.observe(mapDiv);
-
 
 // Event listener for form submission
 cityForm.addEventListener("submit", (e) => {
@@ -163,13 +169,17 @@ function updateMapMarkers(map, data) {
 
     // Create a weather icon based on the weather condition
     const weatherIcon = L.divIcon({
-      className: 'weather-icon', // Add a custom CSS class for styling
-      html: `<img src="${weatherIcons[weather.WeatherText] || './img/sunny.svg'}" alt="${weather.WeatherText}" />`,
+      className: "weather-icon", // Add a custom CSS class for styling
+      html: `<img src="${
+        weatherIcons[weather.WeatherText] || "./img/sunny.svg"
+      }" alt="${weather.WeatherText}" />`,
       iconSize: [32, 32], // Adjust the size as needed
     });
 
     // Create a marker with the weather icon
-    const weatherMarker = L.marker([Latitude, Longitude], { icon: weatherIcon }).addTo(map);
+    const weatherMarker = L.marker([Latitude, Longitude], {
+      icon: weatherIcon,
+    }).addTo(map);
     weatherMarker.options.isWeatherIcon = true; // Custom property to identify it as a weather icon
   }
 }
