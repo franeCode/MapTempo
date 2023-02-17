@@ -103,16 +103,16 @@ function updateTemperatureDisplay(unit) {
 }
 
 // Leaflet map
-const map = L.map("map").setView([51.505, -0.09], 13);
+const map = L.map('map').setView([0, 0], 2);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  // maxZoom: 5,
   noWrap: true,
-  bounds: [
-    [-90, -180],
-    [90, 180],
-  ],
+    bounds: [
+      [-90, -180],
+      [90, 180],
+    ],
+  attribution: '© <a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Esri</a>'
 }).addTo(map);
 
 const resizeObserver = new ResizeObserver(() => {
