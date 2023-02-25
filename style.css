@@ -1,5 +1,4 @@
 body{
-    /* background: #eeedec; */
     letter-spacing: 0.2em;
     font-size: 0.8em;
   }
@@ -8,5 +7,8 @@ body{
   }
   .card {
     width: 50rem;
+  }
+  i {
+    cursor: pointer;
   }
   
