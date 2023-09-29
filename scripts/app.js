@@ -45,7 +45,9 @@ function updateUI(data, unit = "celsius") {
       <div class="my-4">
         <span class='temperature'>${temperatureInSelectedUnit.toFixed(2)}</span>
         <span class='unit-symbol'>${unit === "celsius" ? "C" : "F"}</span>
-        <button id="unit-toggle">Switch Units</button>
+        
+          <i id="unit-toggle" class="fa-solid fa-repeat fa-lg"></i>
+       
       </div>
     `;
 
